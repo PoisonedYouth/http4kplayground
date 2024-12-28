@@ -8,12 +8,22 @@ import com.poisonedyouth.user.infrastructure.ExposedUserRepository
 import com.poisonedyouth.user.domain.UserInputPort
 import com.poisonedyouth.user.domain.UserOutputPort
 import com.poisonedyouth.user.application.UserService
+import org.koin.core.context.startKoin
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 
 data object ComponentConfiguration {
-    private val userOutputPort: UserOutputPort = ExposedUserRepository()
-    val userInputPort: UserInputPort = UserService(userOutputPort)
-    private val chatOutputport: ChatOutputPort = ExposedChatOutputport()
-    val chatInputPort: ChatInputPort = ChatService(
-        chatOutputPort = chatOutputport,
-    )
+    fun initKoin() {
+        startKoin {
+            modules(module)
+        }
+    }
+
+    private val module = module {
+        singleOf(::ExposedUserRepository) { bind<UserOutputPort>() }
+        singleOf(::UserService) { bind<UserInputPort>() }
+        singleOf(::ExposedChatOutputport) { bind<ChatOutputPort>() }
+        singleOf(::ChatService) { bind<ChatInputPort>() }
+    }
 }

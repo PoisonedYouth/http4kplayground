@@ -1,5 +1,6 @@
 package com.poisonedyouth
 
+import com.poisonedyouth.configuration.ComponentConfiguration
 import com.poisonedyouth.configuration.DatabaseConfiguration
 import com.poisonedyouth.configuration.app
 import org.http4k.core.HttpHandler
@@ -14,6 +15,10 @@ private val logger: Logger = LoggerFactory.getLogger("com.poisonedyouth.http4kpl
 
 fun main() {
 
+    logger.info("Starting http4k playground...")
+    logger.info("Starting Koin...")
+    ComponentConfiguration.initKoin()
+    logger.info("Initialize database configuration...")
     DatabaseConfiguration.initialize()
     val printingApp: HttpHandler = PrintRequest().then(app)
 
