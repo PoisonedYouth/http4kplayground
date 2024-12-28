@@ -1,5 +1,7 @@
-package com.poisonedyouth.user
+package com.poisonedyouth.user.infrastructure
 
+import com.poisonedyouth.user.domain.User
+import com.poisonedyouth.user.domain.UserOutputPort
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
@@ -8,7 +10,7 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
-class ExposedUserRepository : UserRepository {
+class ExposedUserRepository : UserOutputPort {
 
     override fun save(user: User): User = transaction {
         UserTable.insert {

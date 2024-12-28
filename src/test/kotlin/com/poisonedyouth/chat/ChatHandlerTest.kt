@@ -1,7 +1,9 @@
 package com.poisonedyouth.chat
 
-import com.poisonedyouth.user.User
-import com.poisonedyouth.user.UserInputPort
+import com.poisonedyouth.chat.domain.ChatInputPort
+import com.poisonedyouth.chat.infrastructure.addChatHandler
+import com.poisonedyouth.user.domain.User
+import com.poisonedyouth.user.domain.UserInputPort
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk

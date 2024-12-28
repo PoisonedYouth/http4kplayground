@@ -1,5 +1,7 @@
-package com.poisonedyouth.user
+package com.poisonedyouth.user.infrastructure
 
+import com.poisonedyouth.user.domain.User
+import com.poisonedyouth.user.domain.UserInputPort
 import org.http4k.core.HttpHandler
 import org.http4k.core.Response
 import org.http4k.core.Status

@@ -1,4 +1,4 @@
-package com.poisonedyouth.user
+package com.poisonedyouth.user.domain
 
 import java.util.UUID
 

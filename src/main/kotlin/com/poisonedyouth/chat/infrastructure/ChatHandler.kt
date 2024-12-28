@@ -1,6 +1,8 @@
-package com.poisonedyouth.chat
+package com.poisonedyouth.chat.infrastructure
 
-import com.poisonedyouth.user.UserInputPort
+import com.poisonedyouth.chat.domain.ChatInputPort
+import com.poisonedyouth.chat.domain.Message
+import com.poisonedyouth.user.domain.UserInputPort
 import org.http4k.core.ContentType
 import org.http4k.core.HttpHandler
 import org.http4k.core.Response

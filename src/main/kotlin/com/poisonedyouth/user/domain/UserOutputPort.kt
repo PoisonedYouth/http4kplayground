@@ -1,8 +1,8 @@
-package com.poisonedyouth.user
+package com.poisonedyouth.user.domain
 
 import java.util.UUID
 
-interface UserRepository{
+interface UserOutputPort{
     fun save(user: User): User
     fun findById(id: UUID): User?
     fun findByUsername(username: String): User?

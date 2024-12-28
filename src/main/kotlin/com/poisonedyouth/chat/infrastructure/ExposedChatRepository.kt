@@ -1,6 +1,9 @@
-package com.poisonedyouth.chat
+package com.poisonedyouth.chat.infrastructure
 
-import com.poisonedyouth.user.UserTable
+import com.poisonedyouth.chat.domain.Chat
+import com.poisonedyouth.chat.domain.ChatOutputPort
+import com.poisonedyouth.chat.domain.Message
+import com.poisonedyouth.user.infrastructure.UserTable
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -12,7 +15,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.util.UUID
 
-class ExposedChatRepository : ChatRepository {
+class ExposedChatOutputport : ChatOutputPort {
 
     override fun findAll(): List<Chat> = transaction {
         ChatTable.selectAll().map {

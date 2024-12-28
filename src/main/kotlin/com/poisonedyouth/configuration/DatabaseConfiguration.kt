@@ -1,13 +1,7 @@
 package com.poisonedyouth.configuration
 
-import com.poisonedyouth.chat.ChatTable
-import com.poisonedyouth.chat.ChatUserTable
-import com.poisonedyouth.chat.ChatMessageTable
-import com.poisonedyouth.user.UserTable
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.Properties
 
 data object DatabaseConfiguration {

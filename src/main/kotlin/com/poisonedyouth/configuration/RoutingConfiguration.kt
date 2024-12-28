@@ -1,11 +1,11 @@
 package com.poisonedyouth.configuration
 
-import com.poisonedyouth.chat.addChatHandler
-import com.poisonedyouth.chat.addMessageToChatHandler
-import com.poisonedyouth.chat.addUserToChatHandler
-import com.poisonedyouth.chat.getAllChatsHandler
-import com.poisonedyouth.chat.getChatHandler
-import com.poisonedyouth.user.addUserHandler
+import com.poisonedyouth.chat.infrastructure.addChatHandler
+import com.poisonedyouth.chat.infrastructure.addMessageToChatHandler
+import com.poisonedyouth.chat.infrastructure.addUserToChatHandler
+import com.poisonedyouth.chat.infrastructure.getAllChatsHandler
+import com.poisonedyouth.chat.infrastructure.getChatHandler
+import com.poisonedyouth.user.infrastructure.addUserHandler
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST

@@ -1,4 +1,4 @@
-package com.poisonedyouth.chat
+package com.poisonedyouth.chat.domain
 
 import java.util.UUID
 
