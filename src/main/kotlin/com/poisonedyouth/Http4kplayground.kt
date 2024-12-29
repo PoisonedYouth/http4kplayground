@@ -11,10 +11,11 @@ import org.http4k.server.asServer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-private val logger: Logger = LoggerFactory.getLogger("com.poisonedyouth.http4kplayground")
+private val logger: Logger = LoggerFactory.getLogger("com.poisonedyouth.Http4kplayground")
+
+private const val SERVER_PORT = 9000
 
 fun main() {
-
     logger.info("Starting http4k playground...")
     logger.info("Starting Koin...")
     ComponentConfiguration.initKoin()
@@ -22,7 +23,7 @@ fun main() {
     DatabaseConfiguration.initialize()
     val printingApp: HttpHandler = PrintRequest().then(app)
 
-    val server = printingApp.asServer(KtorCIO(9000)).start()
+    val server = printingApp.asServer(KtorCIO(SERVER_PORT)).start()
 
     logger.info("Server started on " + server.port())
 

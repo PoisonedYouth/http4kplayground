@@ -7,12 +7,13 @@ import com.poisonedyouth.user.domain.UserInputPort
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import org.http4k.core.Method
+import org.http4k.core.Request
+import org.http4k.core.Status
 import org.junit.jupiter.api.Test
-import org.http4k.core.*
 import java.util.UUID
 
 class ChatHandlerTest {
-
     @Test
     fun `addUserToChatHandler should fail when owner not exists`() {
         // given
@@ -26,25 +27,28 @@ class ChatHandlerTest {
         } returns null
 
         // when
-        val response = addChatHandler(
-            chatInputPort = chatInputPort,
-            userInputPort = userInputPort
-        )(
-            Request(
-                method = Method.POST,
-                uri = "chat",
-            ).body("""
-                {
-                  "owner": "$userId",
-                  "messages" : [
-                    "Hello World!"
-                  ],
-                  "userIds" : [
-                    "$userId"
-                  ]
-                } 
-            """.trimIndent())
-        )
+        val response =
+            addChatHandler(
+                chatInputPort = chatInputPort,
+                userInputPort = userInputPort,
+            )(
+                Request(
+                    method = Method.POST,
+                    uri = "chat",
+                ).body(
+                    """
+                    {
+                      "owner": "$userId",
+                      "messages" : [
+                        "Hello World!"
+                      ],
+                      "userIds" : [
+                        "$userId"
+                      ]
+                    } 
+                    """.trimIndent(),
+                ),
+            )
 
         // then
         response.status shouldBe Status.NOT_FOUND
@@ -60,31 +64,35 @@ class ChatHandlerTest {
 
         every {
             userInputPort.getUserBy(userId = any())
-        } returns User(
-            id = userId,
-            username = "username",
-        )
+        } returns
+            User(
+                id = userId,
+                username = "username",
+            )
 
         // when
-        val response = addChatHandler(
-            chatInputPort = chatInputPort,
-            userInputPort = userInputPort
-        )(
-            Request(
-                method = Method.POST,
-                uri = "chat",
-            ).body("""
-                {
-                  "owner": "$userId",
-                  "messages" : [
-                    "Hello World!"
-                  ],
-                  "userIds" : [
-                    "$userId"
-                  ]
-                } 
-            """.trimIndent())
-        )
+        val response =
+            addChatHandler(
+                chatInputPort = chatInputPort,
+                userInputPort = userInputPort,
+            )(
+                Request(
+                    method = Method.POST,
+                    uri = "chat",
+                ).body(
+                    """
+                    {
+                      "owner": "$userId",
+                      "messages" : [
+                        "Hello World!"
+                      ],
+                      "userIds" : [
+                        "$userId"
+                      ]
+                    } 
+                    """.trimIndent(),
+                ),
+            )
 
         // then
         response.status shouldBe Status.CREATED

@@ -6,7 +6,7 @@ import com.poisonedyouth.user.domain.UserOutputPort
 import java.util.UUID
 
 class UserService(
-    private val userOutputPort: UserOutputPort
+    private val userOutputPort: UserOutputPort,
 ) : UserInputPort {
     override fun getUserBy(username: String): User? {
         return userOutputPort.findByUsername(username)

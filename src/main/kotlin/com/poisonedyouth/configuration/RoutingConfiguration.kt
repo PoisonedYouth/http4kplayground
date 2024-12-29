@@ -18,25 +18,32 @@ import org.koin.java.KoinJavaComponent.inject
 private val chatInputPort by inject<ChatInputPort>(ChatInputPort::class.java)
 private val userInputPort by inject<UserInputPort>(UserInputPort::class.java)
 
-val app: HttpHandler = routes(
-    "chat" bind GET to getAllChatsHandler(
-        chatInputPort = chatInputPort
-    ),
-    "chat" bind POST to addChatHandler(
-        chatInputPort = chatInputPort,
-        userInputPort = userInputPort
-    ),
-    "chat/message" bind POST to addMessageToChatHandler(
-        chatInputPort = chatInputPort
-    ),
-    "chat/{id}" bind GET to getChatHandler(
-        chatInputPort = chatInputPort
-    ),
-    "chat/user" bind POST to addUserToChatHandler(
-        chatInputPort = chatInputPort,
-        userInputPort = userInputPort
-    ),
-    "user" bind POST to addUserHandler(
-        userInputPort = userInputPort,
+val app: HttpHandler =
+    routes(
+        "chat" bind GET to
+            getAllChatsHandler(
+                chatInputPort = chatInputPort,
+            ),
+        "chat" bind POST to
+            addChatHandler(
+                chatInputPort = chatInputPort,
+                userInputPort = userInputPort,
+            ),
+        "chat/message" bind POST to
+            addMessageToChatHandler(
+                chatInputPort = chatInputPort,
+            ),
+        "chat/{id}" bind GET to
+            getChatHandler(
+                chatInputPort = chatInputPort,
+            ),
+        "chat/user" bind POST to
+            addUserToChatHandler(
+                chatInputPort = chatInputPort,
+                userInputPort = userInputPort,
+            ),
+        "user" bind POST to
+            addUserHandler(
+                userInputPort = userInputPort,
+            ),
     )
-)

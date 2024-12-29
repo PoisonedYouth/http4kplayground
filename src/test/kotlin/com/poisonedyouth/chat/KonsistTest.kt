@@ -6,7 +6,6 @@ import com.lemonappdev.konsist.api.architecture.Layer
 import org.junit.jupiter.api.Test
 
 class KonsistTest {
-
     @Test
     fun `verify hexagonal architecture`() {
         Konsist.scopeFromProduction()

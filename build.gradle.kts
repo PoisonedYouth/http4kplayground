@@ -1,12 +1,12 @@
-import org.gradle.api.JavaVersion.VERSION_11
 import org.gradle.api.JavaVersion.VERSION_21
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     kotlin("jvm") version "2.1.0"
     application
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
+    id("io.gitlab.arturbosch.detekt") version "1.23.7"
 }
 
 buildscript {
@@ -71,4 +71,3 @@ dependencies {
     testImplementation("io.mockk:mockk-jvm:1.13.14")
     testImplementation("com.lemonappdev:konsist:0.17.3")
 }
-

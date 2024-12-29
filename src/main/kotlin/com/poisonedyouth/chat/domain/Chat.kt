@@ -7,7 +7,11 @@ class Chat(val id: UUID, val createdAt: Instant, val owner: UUID) {
     private val messages: MutableList<Message> = mutableListOf()
     private val users: MutableSet<UUID> = mutableSetOf()
 
-    fun addMessage(message: String, createdBy: UUID, createdAt: Instant): Chat {
+    fun addMessage(
+        message: String,
+        createdBy: UUID,
+        createdAt: Instant,
+    ): Chat {
         messages.add(Message(UUID.randomUUID(), message, createdAt, createdBy))
         return this
     }

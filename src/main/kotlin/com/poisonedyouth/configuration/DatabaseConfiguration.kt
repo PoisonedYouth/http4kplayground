@@ -5,7 +5,6 @@ import org.jetbrains.exposed.sql.Database
 import java.util.Properties
 
 data object DatabaseConfiguration {
-
     private lateinit var instance: Database
 
     fun initialize() {
@@ -16,12 +15,13 @@ data object DatabaseConfiguration {
         val user = properties.getProperty("database.username")
         val url = properties.getProperty("database.url")
         val password = properties.getProperty("database.password")
-        instance = Database.connect(
-            url = url,
-            driver = driver,
-            user = user,
-            password = password
-        )
+        instance =
+            Database.connect(
+                url = url,
+                driver = driver,
+                user = user,
+                password = password,
+            )
 
         Flyway.configure()
             .dataSource(url, user, password)
