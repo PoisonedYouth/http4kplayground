@@ -7,26 +7,26 @@ interface ChatInputPort {
         owner: UUID,
         messages: List<String>,
         userIds: List<UUID>,
-    ): Chat
+    ): Result<Chat>
 
     fun addMessageToChat(
         chatId: UUID,
         message: Message,
-    )
+    ): Result<Unit>
 
     fun addUsersToChat(
         chatId: UUID,
         userIds: List<UUID>,
-    )
+    ): Result<Unit>
 
     fun removeUserFromChat(
         chatId: UUID,
         userId: UUID,
-    )
+    ): Result<Unit>
 
-    fun deleteChat(chatId: UUID)
+    fun deleteChat(chatId: UUID): Result<Unit>
 
-    fun getAllChats(): List<Chat>
+    fun getAllChats(): Result<List<Chat>>
 
-    fun getChat(id: UUID): Chat?
+    fun getChat(id: UUID): Result<Chat>
 }

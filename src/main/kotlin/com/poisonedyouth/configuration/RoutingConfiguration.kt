@@ -27,7 +27,6 @@ val app: HttpHandler =
         "chat" bind POST to
             addChatHandler(
                 chatInputPort = chatInputPort,
-                userInputPort = userInputPort,
             ),
         "chat/message" bind POST to
             addMessageToChatHandler(
@@ -40,7 +39,6 @@ val app: HttpHandler =
         "chat/user" bind POST to
             addUserToChatHandler(
                 chatInputPort = chatInputPort,
-                userInputPort = userInputPort,
             ),
         "user" bind POST to
             addUserHandler(

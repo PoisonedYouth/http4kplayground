@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
 class ExposedUserRepository : UserOutputPort {
-    override fun save(user: User): User =
+    override fun save(user: User): Result<User> = Result.runCatching {
         transaction {
             UserTable.insert {
                 it[UserTable.id] = user.id
@@ -19,8 +19,9 @@ class ExposedUserRepository : UserOutputPort {
             }
             user
         }
+    }
 
-    override fun findById(id: UUID): User? =
+    override fun findById(id: UUID): Result<User?> = Result.runCatching {
         transaction {
             UserTable.selectAll().where(UserTable.id eq id).singleOrNull()?.let {
                 User(
@@ -29,15 +30,18 @@ class ExposedUserRepository : UserOutputPort {
                 )
             }
         }
+    }
 
-    override fun deleteById(id: UUID): Unit =
+
+    override fun deleteById(id: UUID): Result<Unit> = Result.runCatching {
         transaction {
             UserTable.deleteWhere {
                 UserTable.id eq id
             }
         }
+    }
 
-    override fun findAll(): List<User> =
+    override fun findAll(): Result<List<User>> = Result.runCatching {
         transaction {
             UserTable.selectAll().map {
                 User(
@@ -46,8 +50,9 @@ class ExposedUserRepository : UserOutputPort {
                 )
             }
         }
+    }
 
-    override fun findByUsername(username: String): User? =
+    override fun findByUsername(username: String): Result<User?> = Result.runCatching {
         transaction {
             UserTable.selectAll().where(UserTable.username eq username).singleOrNull()?.let {
                 User(
@@ -56,6 +61,7 @@ class ExposedUserRepository : UserOutputPort {
                 )
             }
         }
+    }
 }
 
 object UserTable : UUIDTable("app_user") {

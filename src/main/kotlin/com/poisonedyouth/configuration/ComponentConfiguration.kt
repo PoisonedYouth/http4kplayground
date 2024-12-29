@@ -3,7 +3,7 @@ package com.poisonedyouth.configuration
 import com.poisonedyouth.chat.application.ChatService
 import com.poisonedyouth.chat.domain.ChatInputPort
 import com.poisonedyouth.chat.domain.ChatOutputPort
-import com.poisonedyouth.chat.infrastructure.ExposedChatOutputport
+import com.poisonedyouth.chat.infrastructure.ExposedChatOutputPort
 import com.poisonedyouth.user.application.UserService
 import com.poisonedyouth.user.domain.UserInputPort
 import com.poisonedyouth.user.domain.UserOutputPort
@@ -24,7 +24,7 @@ data object ComponentConfiguration {
         module {
             singleOf(::ExposedUserRepository) { bind<UserOutputPort>() }
             singleOf(::UserService) { bind<UserInputPort>() }
-            singleOf(::ExposedChatOutputport) { bind<ChatOutputPort>() }
+            singleOf(::ExposedChatOutputPort) { bind<ChatOutputPort>() }
             singleOf(::ChatService) { bind<ChatInputPort>() }
         }
 }
