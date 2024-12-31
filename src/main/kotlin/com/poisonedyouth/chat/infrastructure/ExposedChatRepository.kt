@@ -42,9 +42,12 @@ class ExposedChatOutputPort : ChatOutputPort {
         }
         ChatMessageTable.selectAll().where({ ChatMessageTable.chatId eq chatId }).forEach { message ->
             chat.addMessage(
-                message = message[ChatMessageTable.message],
-                createdBy = message[ChatMessageTable.createdBy],
-                createdAt = message[ChatMessageTable.createdAt],
+                Message(
+                    id = message[ChatMessageTable.id].value,
+                    message = message[ChatMessageTable.message],
+                    createdBy = message[ChatMessageTable.createdBy],
+                    createdAt = message[ChatMessageTable.createdAt],
+                ),
             )
         }
         return chat

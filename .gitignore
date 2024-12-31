@@ -1,5 +1,6 @@
 /chat-db.mv.db
-/build/
+build/
 /chat-db.trace.db
-/.gradle/
-/.idea/
+.gradle
+gradle
+.idea

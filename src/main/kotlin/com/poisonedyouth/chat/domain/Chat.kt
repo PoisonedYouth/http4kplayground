@@ -4,15 +4,11 @@ import java.time.Instant
 import java.util.UUID
 
 class Chat(val id: UUID, val createdAt: Instant, val owner: UUID) {
-    private val messages: MutableList<Message> = mutableListOf()
+    private val messages: MutableSet<Message> = mutableSetOf()
     private val users: MutableSet<UUID> = mutableSetOf()
 
-    fun addMessage(
-        message: String,
-        createdBy: UUID,
-        createdAt: Instant,
-    ): Chat {
-        messages.add(Message(UUID.randomUUID(), message, createdAt, createdBy))
+    fun addMessage(message: Message): Chat {
+        messages.add(message)
         return this
     }
 
@@ -39,4 +35,12 @@ class Chat(val id: UUID, val createdAt: Instant, val owner: UUID) {
     }
 }
 
-data class Message(val id: UUID, val message: String, val createdAt: Instant, val createdBy: UUID)
+class Message(val id: UUID, val message: String, val createdAt: Instant, val createdBy: UUID) {
+    override fun equals(other: Any?): Boolean {
+        return other is Message && id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+}

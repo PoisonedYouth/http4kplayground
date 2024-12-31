@@ -46,9 +46,12 @@ class ChatService(
                 )
             messages.forEach {
                 chat.addMessage(
-                    message = it,
-                    createdBy = owner,
-                    createdAt = Instant.now(),
+                    Message(
+                        id = UUID.randomUUID(),
+                        message = it,
+                        createdBy = owner,
+                        createdAt = Instant.now(),
+                    ),
                 )
             }
             userIds.forEach {
@@ -88,9 +91,12 @@ class ChatService(
             } else {
                 chatOutputPort.save(
                     chat.addMessage(
-                        message = message.message,
-                        createdBy = message.createdBy,
-                        createdAt = message.createdAt,
+                        Message(
+                            id = UUID.randomUUID(),
+                            message = message.message,
+                            createdBy = message.createdBy,
+                            createdAt = message.createdAt,
+                        ),
                     ),
                 ).bind().also {
                     eventInputPort.publish(
