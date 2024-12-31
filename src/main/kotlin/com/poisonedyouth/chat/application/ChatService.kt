@@ -3,18 +3,20 @@ package com.poisonedyouth.chat.application
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensureNotNull
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.poisonedyouth.chat.domain.Chat
 import com.poisonedyouth.chat.domain.ChatInputPort
 import com.poisonedyouth.chat.domain.ChatNotFoundException
 import com.poisonedyouth.chat.domain.ChatOutputPort
 import com.poisonedyouth.chat.domain.Message
 import com.poisonedyouth.common.GenericException
+import com.poisonedyouth.configuration.objectMapper
 import com.poisonedyouth.event.domain.Event
 import com.poisonedyouth.event.domain.EventInputPort
 import com.poisonedyouth.event.domain.EventType
 import com.poisonedyouth.user.domain.UserInputPort
 import com.poisonedyouth.user.domain.UserNotFoundException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.util.UUID
 
@@ -23,6 +25,8 @@ class ChatService(
     private val userInputPort: UserInputPort,
     private val eventInputPort: EventInputPort,
 ) : ChatInputPort {
+    private val logger: Logger = LoggerFactory.getLogger(ChatService::class.java)
+
     override fun createNewChat(
         owner: UUID,
         messages: List<String>,
@@ -38,9 +42,11 @@ class ChatService(
                 raise(UserNotFoundException("User(s) '$notExistingUserIds' not found."))
             }
 
+            val id = UUID.randomUUID()
+            logger.info("Creating new chat with id '{}'", id)
             val chat =
                 Chat(
-                    id = UUID.randomUUID(),
+                    id = id,
                     owner = owner,
                     createdAt = Instant.now(),
                 )
@@ -62,8 +68,8 @@ class ChatService(
                 eventInputPort.publish(
                     Event(
                         id = UUID.randomUUID(),
-                        createdAt = Instant.now(),
-                        payload = jacksonObjectMapper().writeValueAsString(it),
+                        createdAt = it.createdAt,
+                        payload = objectMapper.writeValueAsString(it),
                         type = EventType.CREATE_CHAT,
                     ),
                 )
@@ -103,7 +109,7 @@ class ChatService(
                         Event(
                             id = UUID.randomUUID(),
                             createdAt = Instant.now(),
-                            payload = jacksonObjectMapper().writeValueAsString(it),
+                            payload = objectMapper.writeValueAsString(it),
                             type = EventType.ADD_MESSAGE_TO_CHAT,
                         ),
                     )
@@ -132,7 +138,7 @@ class ChatService(
                     Event(
                         id = UUID.randomUUID(),
                         createdAt = Instant.now(),
-                        payload = jacksonObjectMapper().writeValueAsString(it),
+                        payload = objectMapper.writeValueAsString(it),
                         type = EventType.ADD_USER_TO_CHAT,
                     ),
                 )
@@ -154,7 +160,7 @@ class ChatService(
                     Event(
                         id = UUID.randomUUID(),
                         createdAt = Instant.now(),
-                        payload = jacksonObjectMapper().writeValueAsString(it),
+                        payload = objectMapper.writeValueAsString(it),
                         type = EventType.REMOVE_USER_FROM_CHAT,
                     ),
                 )

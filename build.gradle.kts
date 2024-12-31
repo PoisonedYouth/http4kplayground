@@ -57,6 +57,7 @@ dependencies {
     implementation("org.http4k:http4k-core")
     implementation("org.http4k:http4k-format-jackson")
     implementation("org.http4k:http4k-server-ktorcio")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2")
     implementation("ch.qos.logback:logback-classic:1.5.15")
     implementation("com.h2database:h2:2.3.232")
     implementation("org.jetbrains.exposed:exposed-core:0.57.0")
@@ -71,4 +72,5 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.11.3")
     testImplementation("io.mockk:mockk-jvm:1.13.14")
     testImplementation("com.lemonappdev:konsist:0.17.3")
+    implementation("io.kotest.extensions:kotest-assertions-arrow-jvm:2.0.0")
 }

@@ -2,8 +2,8 @@ package com.poisonedyouth.user.application
 
 import arrow.core.Either
 import arrow.core.raise.either
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.poisonedyouth.common.GenericException
+import com.poisonedyouth.configuration.objectMapper
 import com.poisonedyouth.event.domain.Event
 import com.poisonedyouth.event.domain.EventInputPort
 import com.poisonedyouth.event.domain.EventType
@@ -42,7 +42,7 @@ class UserService(
                     Event(
                         id = UUID.randomUUID(),
                         createdAt = Instant.now(),
-                        payload = jacksonObjectMapper().writeValueAsString(it),
+                        payload = objectMapper.writeValueAsString(it),
                         type = EventType.CREATE_USER,
                     ),
                 )
