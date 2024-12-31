@@ -1,41 +1,35 @@
-create table APP_USER
+CREATE TABLE app_user
 (
-    ID       UUID                   not null
-        primary key,
-    USERNAME CHARACTER VARYING(255) not null
-        constraint USER_USERNAME_UNIQUE
-            unique
+    id       UUID NOT NULL PRIMARY KEY,
+    username CHARACTER VARYING(255) NOT NULL CONSTRAINT user_username_unique
+        UNIQUE
 );
 
-create table CHAT
+CREATE TABLE chat
 (
-    ID         UUID         not null
-        primary key,
-    CREATED_AT TIMESTAMP(9) not null,
-    OWNER      UUID         not null,
-    constraint FK_CHAT_USER__ID
-        foreign key (OWNER) references APP_USER
+    id         UUID NOT NULL PRIMARY KEY,
+    created_at TIMESTAMP(9) NOT NULL,
+    owner      UUID NOT NULL,
+    CONSTRAINT fk_chat_user__id FOREIGN KEY (owner) REFERENCES app_user
 );
 
-create table CHAT_MESSAGE
+CREATE TABLE chat_message
 (
-    ID         UUID              not null
-        primary key,
-    CHAT_ID    UUID              not null,
-    MESSAGE    CHARACTER VARYING not null,
-    CREATED_BY UUID              not null,
-    CREATED_AT TIMESTAMP(9)      not null,
-    constraint FK_CHAT_MESSAGE_CHAT_ID__ID
-        foreign key (CHAT_ID) references CHAT
+    id         UUID NOT NULL PRIMARY KEY,
+    chat_id    UUID NOT NULL,
+    message    CHARACTER VARYING NOT NULL,
+    created_by UUID NOT NULL,
+    created_at TIMESTAMP(9) NOT NULL,
+    CONSTRAINT fk_chat_message_chat_id__id FOREIGN KEY (chat_id) REFERENCES
+        chat
 );
-create table CHAT_USER
+
+CREATE TABLE chat_user
 (
-    ID      UUID not null
-        primary key,
-    CHAT_ID UUID not null,
-    USER_ID UUID not null,
-    constraint FK_CHAT_USER_CHAT_ID__ID
-        foreign key (CHAT_ID) references CHAT,
-    constraint FK_CHAT_USER_USER_ID__ID
-        foreign key (USER_ID) references APP_USER
+    id      UUID NOT NULL PRIMARY KEY,
+    chat_id UUID NOT NULL,
+    user_id UUID NOT NULL,
+    CONSTRAINT fk_chat_user_chat_id__id FOREIGN KEY (chat_id) REFERENCES chat,
+    CONSTRAINT fk_chat_user_user_id__id FOREIGN KEY (user_id) REFERENCES
+        app_user
 );

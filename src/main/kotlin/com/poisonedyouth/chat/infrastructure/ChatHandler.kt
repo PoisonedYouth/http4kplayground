@@ -17,8 +17,9 @@ import java.util.UUID
 fun addUserToChatHandler(chatInputPort: ChatInputPort): HttpHandler =
     { request ->
         val newUserDto = Jackson.asA<NewUserDto>(request.bodyString())
-        val result = chatInputPort
-            .addUsersToChat(UUID.fromString(newUserDto.chatId), newUserDto.userIds.map { UUID.fromString(it) })
+        val result =
+            chatInputPort
+                .addUsersToChat(UUID.fromString(newUserDto.chatId), newUserDto.userIds.map { UUID.fromString(it) })
 
         result.fold(
             ifLeft = { handleFailure(it) },
@@ -68,12 +69,12 @@ fun addMessageToChatHandler(chatInputPort: ChatInputPort): HttpHandler =
             chatInputPort.addMessageToChat(
                 chatId = UUID.fromString(newChatMessageDto.chatId),
                 message =
-                Message(
-                    id = UUID.randomUUID(),
-                    message = newChatMessageDto.message,
-                    createdAt = Instant.now(),
-                    createdBy = newChatMessageDto.owner.let { UUID.fromString(it) },
-                ),
+                    Message(
+                        id = UUID.randomUUID(),
+                        message = newChatMessageDto.message,
+                        createdAt = Instant.now(),
+                        createdBy = newChatMessageDto.owner.let { UUID.fromString(it) },
+                    ),
             )
 
         result.fold(
@@ -143,12 +144,12 @@ fun Chat.toDto() =
         id = this.id.toString(),
         createdAt = this.createdAt.toString(),
         messages =
-        this.getMessages().map { message ->
-            MessageDto(
-                id = message.id.toString(),
-                message = message.message,
-                createdAt = message.createdAt.toString(),
-                createdBy = message.createdBy.toString(),
-            )
-        },
+            this.getMessages().map { message ->
+                MessageDto(
+                    id = message.id.toString(),
+                    message = message.message,
+                    createdAt = message.createdAt.toString(),
+                    createdBy = message.createdBy.toString(),
+                )
+            },
     )

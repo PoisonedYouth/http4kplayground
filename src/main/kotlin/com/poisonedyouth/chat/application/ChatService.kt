@@ -2,12 +2,17 @@ package com.poisonedyouth.chat.application
 
 import arrow.core.Either
 import arrow.core.raise.either
+import arrow.core.raise.ensureNotNull
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.poisonedyouth.chat.domain.Chat
 import com.poisonedyouth.chat.domain.ChatInputPort
 import com.poisonedyouth.chat.domain.ChatNotFoundException
 import com.poisonedyouth.chat.domain.ChatOutputPort
 import com.poisonedyouth.chat.domain.Message
 import com.poisonedyouth.common.GenericException
+import com.poisonedyouth.event.domain.Event
+import com.poisonedyouth.event.domain.EventInputPort
+import com.poisonedyouth.event.domain.EventType
 import com.poisonedyouth.user.domain.UserInputPort
 import com.poisonedyouth.user.domain.UserNotFoundException
 import java.time.Instant
@@ -16,6 +21,7 @@ import java.util.UUID
 class ChatService(
     private val chatOutputPort: ChatOutputPort,
     private val userInputPort: UserInputPort,
+    private val eventInputPort: EventInputPort,
 ) : ChatInputPort {
     override fun createNewChat(
         owner: UUID,
@@ -23,9 +29,11 @@ class ChatService(
         userIds: List<UUID>,
     ): Either<GenericException, Chat> =
         either {
-            userInputPort.getUserBy(owner).bind()
+            ensureNotNull(userInputPort.getUserBy(owner).bind()) {
+                raise(UserNotFoundException("User with id '$owner' not found."))
+            }
 
-            val notExistingUserIds = userIds.filter { userId -> userInputPort.getUserBy(userId).bind() != null }
+            val notExistingUserIds = userIds.filter { userId -> userInputPort.getUserBy(userId).bind() == null }
             if (notExistingUserIds.isNotEmpty()) {
                 raise(UserNotFoundException("User(s) '$notExistingUserIds' not found."))
             }
@@ -47,7 +55,16 @@ class ChatService(
                 chat.addUser(it)
             }
 
-            chatOutputPort.save(chat).bind()
+            chatOutputPort.save(chat).bind().also {
+                eventInputPort.publish(
+                    Event(
+                        id = UUID.randomUUID(),
+                        createdAt = Instant.now(),
+                        payload = jacksonObjectMapper().writeValueAsString(it),
+                        type = EventType.CREATE_CHAT,
+                    ),
+                )
+            }
             chat
         }
 
@@ -75,7 +92,16 @@ class ChatService(
                         createdBy = message.createdBy,
                         createdAt = message.createdAt,
                     ),
-                ).bind()
+                ).bind().also {
+                    eventInputPort.publish(
+                        Event(
+                            id = UUID.randomUUID(),
+                            createdAt = Instant.now(),
+                            payload = jacksonObjectMapper().writeValueAsString(it),
+                            type = EventType.ADD_MESSAGE_TO_CHAT,
+                        ),
+                    )
+                }
             }
         }
 
@@ -84,17 +110,27 @@ class ChatService(
         userIds: List<UUID>,
     ): Either<GenericException, Unit> =
         either {
-            val chat = chatOutputPort.findById(chatId).bind()
-                ?: raise(ChatNotFoundException("Chat with id '$chatId' not found."))
+            val chat =
+                chatOutputPort.findById(chatId).bind()
+                    ?: raise(ChatNotFoundException("Chat with id '$chatId' not found."))
 
-            val notExistingUserIds = userIds.filter { userId -> userInputPort.getUserBy(userId).bind() != null }
+            val notExistingUserIds = userIds.filter { userId -> userInputPort.getUserBy(userId).bind() == null }
             if (notExistingUserIds.isNotEmpty()) {
                 raise(UserNotFoundException("User(s) '$notExistingUserIds' not found."))
             }
 
             chatOutputPort.save(
-                chat.addUser(userIds.first()),
-            ).bind()
+                userIds.fold(chat) { acc, userId -> acc.addUser(userId) },
+            ).bind().also {
+                eventInputPort.publish(
+                    Event(
+                        id = UUID.randomUUID(),
+                        createdAt = Instant.now(),
+                        payload = jacksonObjectMapper().writeValueAsString(it),
+                        type = EventType.ADD_USER_TO_CHAT,
+                    ),
+                )
+            }
         }
 
     override fun removeUserFromChat(
@@ -102,11 +138,21 @@ class ChatService(
         userId: UUID,
     ): Either<GenericException, Unit> =
         either {
-            val chat = chatOutputPort.findById(chatId).bind()
-                ?: raise(ChatNotFoundException("Chat with id '$chatId' not found."))
+            val chat =
+                chatOutputPort.findById(chatId).bind()
+                    ?: raise(ChatNotFoundException("Chat with id '$chatId' not found."))
             chatOutputPort.save(
                 chat.removeUser(userId),
-            ).bind()
+            ).bind().also {
+                eventInputPort.publish(
+                    Event(
+                        id = UUID.randomUUID(),
+                        createdAt = Instant.now(),
+                        payload = jacksonObjectMapper().writeValueAsString(it),
+                        type = EventType.REMOVE_USER_FROM_CHAT,
+                    ),
+                )
+            }
         }
 
     override fun deleteChat(chatId: UUID): Either<GenericException, Unit> {
