@@ -1,8 +1,10 @@
 package com.poisonedyouth.chat.infrastructure
 
+import arrow.core.Either
 import com.poisonedyouth.chat.domain.Chat
 import com.poisonedyouth.chat.domain.ChatOutputPort
 import com.poisonedyouth.chat.domain.Message
+import com.poisonedyouth.common.GenericException
 import com.poisonedyouth.user.infrastructure.UserTable
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
@@ -16,13 +18,15 @@ import org.jetbrains.exposed.sql.update
 import java.util.UUID
 
 class ExposedChatOutputPort : ChatOutputPort {
-    override fun findAll(): Result<List<Chat>> =
-        Result.runCatching {
+    override fun findAll(): Either<GenericException, List<Chat>> =
+        Either.catch {
             transaction {
                 ChatTable.selectAll().map {
                     mapResultRowToChat(it)
                 }
             }
+        }.mapLeft {
+            GenericException("Failed to load chats.", it)
         }
 
     private fun mapResultRowToChat(it: ResultRow): Chat {
@@ -46,10 +50,10 @@ class ExposedChatOutputPort : ChatOutputPort {
         return chat
     }
 
-    override fun save(chat: Chat): Result<Chat> =
-        Result.runCatching {
+    override fun save(chat: Chat): Either<GenericException, Chat> =
+        Either.catch {
             transaction {
-                if (findById(chat.id).getOrThrow() != null) {
+                if (findById(chat.id).getOrNull() != null) {
                     ChatTable.update({ ChatTable.id eq chat.id }) {
                         it[createdAt] = chat.createdAt
                         it[owner] = chat.owner
@@ -69,24 +73,32 @@ class ExposedChatOutputPort : ChatOutputPort {
                 }
                 chat
             }
+        }.mapLeft {
+            GenericException("Failed to save chat.", it)
         }
 
-    override fun findById(id: UUID): Result<Chat?> =
-        Result.runCatching {
+    override fun findById(id: UUID): Either<GenericException, Chat?> =
+        Either.catch {
             transaction {
                 ChatTable.selectAll().where(ChatTable.id eq id).singleOrNull()?.let {
                     mapResultRowToChat(it)
                 }
             }
+        }.mapLeft {
+            GenericException("Failed to load chat.", it)
         }
 
-    override fun deleteById(id: UUID): Result<Unit> = Result.runCatching {
-        transaction {
-            ChatTable.deleteWhere {
-                ChatTable.id eq id
+    override fun deleteById(id: UUID): Either<GenericException, Unit> =
+        Either.catch {
+            transaction {
+                ChatTable.deleteWhere {
+                    ChatTable.id eq id
+                }
             }
+            Unit
+        }.mapLeft {
+            GenericException("Failed to delete chat.", it)
         }
-    }
 
     private fun addOrUpdateChatMessage(
         message: Message,

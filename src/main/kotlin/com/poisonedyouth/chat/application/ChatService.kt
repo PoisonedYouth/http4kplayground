@@ -1,10 +1,13 @@
 package com.poisonedyouth.chat.application
 
+import arrow.core.Either
+import arrow.core.raise.either
 import com.poisonedyouth.chat.domain.Chat
 import com.poisonedyouth.chat.domain.ChatInputPort
 import com.poisonedyouth.chat.domain.ChatNotFoundException
 import com.poisonedyouth.chat.domain.ChatOutputPort
 import com.poisonedyouth.chat.domain.Message
+import com.poisonedyouth.common.GenericException
 import com.poisonedyouth.user.domain.UserInputPort
 import com.poisonedyouth.user.domain.UserNotFoundException
 import java.time.Instant
@@ -18,86 +21,95 @@ class ChatService(
         owner: UUID,
         messages: List<String>,
         userIds: List<UUID>,
-    ): Result<Chat> = Result.runCatching {
-        userInputPort.getUserBy(owner).getOrThrow()
+    ): Either<GenericException, Chat> =
+        either {
+            userInputPort.getUserBy(owner).bind()
 
-        val notExistingUserIds = userIds.filter { userId -> userInputPort.getUserBy(userId).isFailure }
-        if (notExistingUserIds.isNotEmpty()) {
-            throw UserNotFoundException("User(s) '$notExistingUserIds' not found.")
+            val notExistingUserIds = userIds.filter { userId -> userInputPort.getUserBy(userId).bind() != null }
+            if (notExistingUserIds.isNotEmpty()) {
+                raise(UserNotFoundException("User(s) '$notExistingUserIds' not found."))
+            }
+
+            val chat =
+                Chat(
+                    id = UUID.randomUUID(),
+                    owner = owner,
+                    createdAt = Instant.now(),
+                )
+            messages.forEach {
+                chat.addMessage(
+                    message = it,
+                    createdBy = owner,
+                    createdAt = Instant.now(),
+                )
+            }
+            userIds.forEach {
+                chat.addUser(it)
+            }
+
+            chatOutputPort.save(chat).bind()
+            chat
         }
 
-        val chat = Chat(
-            id = UUID.randomUUID(),
-            owner = owner,
-            createdAt = Instant.now(),
-        )
-        messages.forEach {
-            chat.addMessage(
-                message = it,
-                createdBy = owner,
-                createdAt = Instant.now(),
-            )
-        }
-        userIds.forEach {
-            chat.addUser(it)
-        }
-
-        chatOutputPort.save(chat).getOrThrow()
-    }
-
-    override fun getAllChats(): Result<List<Chat>> {
+    override fun getAllChats(): Either<GenericException, List<Chat>> {
         return chatOutputPort.findAll()
     }
 
-    override fun getChat(id: UUID): Result<Chat> = Result.runCatching {
-        chatOutputPort.findById(id).getOrThrow() ?: throw ChatNotFoundException("Chat with id '$id' not found.")
-    }
+    override fun getChat(id: UUID): Either<GenericException, Chat> =
+        either {
+            chatOutputPort.findById(id).bind() ?: raise(ChatNotFoundException("Chat with id '$id' not found."))
+        }
 
     override fun addMessageToChat(
         chatId: UUID,
         message: Message,
-    ): Result<Unit> = Result.runCatching {
-        val chat = chatOutputPort.findById(chatId).getOrThrow()
-        if (chat == null) {
-            throw ChatNotFoundException("Chat with id '$chatId' not found.")
-        } else {
-            chatOutputPort.save(
-                chat.addMessage(
-                    message = message.message,
-                    createdBy = message.createdBy,
-                    createdAt = message.createdAt,
-                ),
-            )
+    ): Either<GenericException, Unit> =
+        either {
+            val chat = chatOutputPort.findById(chatId).bind()
+            if (chat == null) {
+                raise(ChatNotFoundException("Chat with id '$chatId' not found."))
+            } else {
+                chatOutputPort.save(
+                    chat.addMessage(
+                        message = message.message,
+                        createdBy = message.createdBy,
+                        createdAt = message.createdAt,
+                    ),
+                ).bind()
+            }
         }
-    }
 
     override fun addUsersToChat(
         chatId: UUID,
         userIds: List<UUID>,
-    ): Result<Unit> = Result.runCatching {
-        val chat = chatOutputPort.findById(chatId).getOrThrow() ?: throw ChatNotFoundException("Chat with id '$chatId' not found.")
+    ): Either<GenericException, Unit> =
+        either {
+            val chat = chatOutputPort.findById(chatId).bind()
+                ?: raise(ChatNotFoundException("Chat with id '$chatId' not found."))
 
-        val notExistingUserIds = userIds.filter { userId -> userInputPort.getUserBy(userId).isFailure }
-        if (notExistingUserIds.isNotEmpty()) {
-            throw UserNotFoundException("User(s) '$notExistingUserIds' not found.")
+            val notExistingUserIds = userIds.filter { userId -> userInputPort.getUserBy(userId).bind() != null }
+            if (notExistingUserIds.isNotEmpty()) {
+                raise(UserNotFoundException("User(s) '$notExistingUserIds' not found."))
+            }
+
+            chatOutputPort.save(
+                chat.addUser(userIds.first()),
+            ).bind()
         }
-
-        chatOutputPort.save(
-            chat.addUser(userIds.first()),
-        )
-    }
 
     override fun removeUserFromChat(
         chatId: UUID,
         userId: UUID,
-    ): Result<Unit> = Result.runCatching {
-        val chat = chatOutputPort.findById(chatId).getOrThrow() ?: throw ChatNotFoundException("Chat with id '$chatId' not found.")
-        chatOutputPort.save(
-            chat.removeUser(userId),
-        )
-    }
+    ): Either<GenericException, Unit> =
+        either {
+            val chat = chatOutputPort.findById(chatId).bind()
+                ?: raise(ChatNotFoundException("Chat with id '$chatId' not found."))
+            chatOutputPort.save(
+                chat.removeUser(userId),
+            ).bind()
+        }
 
-    override fun deleteChat(chatId: UUID): Result<Unit> {
+    override fun deleteChat(chatId: UUID): Either<GenericException, Unit> {
         return chatOutputPort.deleteById(chatId)
     }
 }

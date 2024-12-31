@@ -1,5 +1,7 @@
 package com.poisonedyouth.chat.domain
 
+import arrow.core.Either
+import com.poisonedyouth.common.GenericException
 import java.util.UUID
 
 interface ChatInputPort {
@@ -7,26 +9,26 @@ interface ChatInputPort {
         owner: UUID,
         messages: List<String>,
         userIds: List<UUID>,
-    ): Result<Chat>
+    ): Either<GenericException, Chat>
 
     fun addMessageToChat(
         chatId: UUID,
         message: Message,
-    ): Result<Unit>
+    ): Either<GenericException, Unit>
 
     fun addUsersToChat(
         chatId: UUID,
         userIds: List<UUID>,
-    ): Result<Unit>
+    ): Either<GenericException, Unit>
 
     fun removeUserFromChat(
         chatId: UUID,
         userId: UUID,
-    ): Result<Unit>
+    ): Either<GenericException, Unit>
 
-    fun deleteChat(chatId: UUID): Result<Unit>
+    fun deleteChat(chatId: UUID): Either<GenericException, Unit>
 
-    fun getAllChats(): Result<List<Chat>>
+    fun getAllChats(): Either<GenericException, List<Chat>>
 
-    fun getChat(id: UUID): Result<Chat>
+    fun getChat(id: UUID): Either<GenericException, Chat>
 }

@@ -1,3 +1,5 @@
 package com.poisonedyouth.chat.domain
 
-class ChatNotFoundException(message: String) : RuntimeException(message)
+import com.poisonedyouth.common.GenericException
+
+class ChatNotFoundException(message: String) : GenericException(message)

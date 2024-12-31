@@ -1,13 +1,15 @@
 package com.poisonedyouth.chat.domain
 
+import arrow.core.Either
+import com.poisonedyouth.common.GenericException
 import java.util.UUID
 
 interface ChatOutputPort {
-    fun save(chat: Chat): Result<Chat>
+    fun save(chat: Chat): Either<GenericException, Chat>
 
-    fun findById(id: UUID): Result<Chat?>
+    fun findById(id: UUID): Either<GenericException, Chat?>
 
-    fun deleteById(id: UUID): Result<Unit>
+    fun deleteById(id: UUID): Either<GenericException, Unit>
 
-    fun findAll(): Result<List<Chat>>
+    fun findAll(): Either<GenericException, List<Chat>>
 }

@@ -1,3 +1,5 @@
 package com.poisonedyouth.user.domain
 
-class UserNotFoundException(override val message: String): RuntimeException(message)
+import com.poisonedyouth.common.GenericException
+
+class UserNotFoundException(override val message: String) : GenericException(message)

@@ -1,15 +1,17 @@
 package com.poisonedyouth.user.domain
 
+import arrow.core.Either
+import com.poisonedyouth.common.GenericException
 import java.util.UUID
 
 interface UserOutputPort {
-    fun save(user: User): Result<User>
+    fun save(user: User): Either<GenericException, User>
 
-    fun findById(id: UUID): Result<User?>
+    fun findById(id: UUID): Either<GenericException, User?>
 
-    fun findByUsername(username: String): Result<User?>
+    fun findByUsername(username: String): Either<GenericException, User?>
 
-    fun deleteById(id: UUID): Result<Unit>
+    fun deleteById(id: UUID): Either<GenericException, Unit>
 
-    fun findAll(): Result<List<User>>
+    fun findAll(): Either<GenericException, List<User>>
 }

@@ -2,3 +2,4 @@
 /build/
 /chat-db.trace.db
 /.gradle/
+/.idea/
