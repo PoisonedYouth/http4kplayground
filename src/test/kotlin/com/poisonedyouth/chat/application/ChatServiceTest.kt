@@ -88,13 +88,13 @@ class ChatServiceTest {
         every {
             chatOutputPort.save(any())
         } returns
-                Either.Right(
-                    Chat(
-                        id = UUID.randomUUID(),
-                        createdAt = Instant.now(),
-                        owner = owner,
-                    ),
-                )
+            Either.Right(
+                Chat(
+                    id = UUID.randomUUID(),
+                    createdAt = Instant.now(),
+                    owner = owner,
+                ),
+            )
 
         // when
         val actual = chatService.createNewChat(owner = owner, messages = messages, userIds = userIds)
@@ -163,9 +163,9 @@ class ChatServiceTest {
         every {
             chatOutputPort.findById(chatId)
         } returns
-                Either.Right(
-                    Chat(id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()),
-                )
+            Either.Right(
+                Chat(id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()),
+            )
 
         val message =
             Message(
@@ -178,9 +178,9 @@ class ChatServiceTest {
         every {
             chatOutputPort.save(any())
         } returns
-                Either.Right(
-                    Chat(id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()).addMessage(message),
-                )
+            Either.Right(
+                Chat(id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()).addMessage(message),
+            )
 
         // when
         val actual = chatService.addMessageToChat(chatId = chatId, message = message)
@@ -217,9 +217,9 @@ class ChatServiceTest {
         every {
             chatOutputPort.findById(chatId)
         } returns
-                Either.Right(
-                    Chat(id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()),
-                )
+            Either.Right(
+                Chat(id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()),
+            )
 
         val userIds = listOf<UUID>(UUID.randomUUID())
 
@@ -241,9 +241,9 @@ class ChatServiceTest {
         every {
             chatOutputPort.findById(chatId)
         } returns
-                Either.Right(
-                    Chat(id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()),
-                )
+            Either.Right(
+                Chat(id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()),
+            )
 
         val userId1 = UUID.randomUUID()
         val userId2 = UUID.randomUUID()
@@ -256,15 +256,18 @@ class ChatServiceTest {
             userInputPort.getUserBy(userId2)
         } returns Either.Right(User(id = userId2, username = "test-user-2"))
 
-        val expectedChat = Chat(
-            id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()
-        ).addUser(userId1).addUser(userId2)
+        val expectedChat =
+            Chat(
+                id = chatId,
+                createdAt = Instant.now(),
+                owner = UUID.randomUUID(),
+            ).addUser(userId1).addUser(userId2)
         every {
             chatOutputPort.save(any())
         } returns
-                Either.Right(
-                    expectedChat,
-                )
+            Either.Right(
+                expectedChat,
+            )
 
         // when
         val actual = chatService.addUsersToChat(chatId = chatId, userIds = userIds)
@@ -303,16 +306,16 @@ class ChatServiceTest {
         every {
             chatOutputPort.findById(chatId)
         } returns
-                Either.Right(
-                    Chat(id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()).addUser(userId),
-                )
+            Either.Right(
+                Chat(id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()).addUser(userId),
+            )
 
         every {
             chatOutputPort.save(any())
         } returns
-                Either.Right(
-                    Chat(id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()),
-                )
+            Either.Right(
+                Chat(id = chatId, createdAt = Instant.now(), owner = UUID.randomUUID()),
+            )
 
         // when
         val actual = chatService.removeUserFromChat(chatId = chatId, userId = userId)

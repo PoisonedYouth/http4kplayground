@@ -72,5 +72,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.11.3")
     testImplementation("io.mockk:mockk-jvm:1.13.14")
     testImplementation("com.lemonappdev:konsist:0.17.3")
-    implementation("io.kotest.extensions:kotest-assertions-arrow-jvm:2.0.0")
+    testImplementation("io.kotest.extensions:kotest-assertions-arrow-jvm:2.0.0")
+    testImplementation("org.http4k:http4k-client-apache")
 }

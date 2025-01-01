@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 
 class UserServiceTest {
-
     private val eventInputPort = mockk<EventInputPort>(relaxed = true)
     private val userOutputPort = mockk<UserOutputPort>(relaxed = true)
     private val userService =
@@ -26,7 +25,7 @@ class UserServiceTest {
         )
 
     @Test
-    fun `getUserBy using username should fail when user does not exist`()  {
+    fun `getUserBy using username should fail when user does not exist`() {
         // given
         val username = "test-user"
 
@@ -42,7 +41,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `getUserBy using username should return existing user`()  {
+    fun `getUserBy using username should return existing user`() {
         // given
         val username = "test-user"
 
@@ -66,7 +65,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `getUserBy using userId should fail when user does not exist`()  {
+    fun `getUserBy using userId should fail when user does not exist`() {
         // given
         val userId = UUID.randomUUID()
 
@@ -82,7 +81,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `getUserBy should return existing user`()  {
+    fun `getUserBy should return existing user`() {
         // given
         val userId = UUID.randomUUID()
 
@@ -106,7 +105,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `createNewUser should save new user`()  {
+    fun `createNewUser should save new user`() {
         // given
         val username = "test-user"
 
@@ -127,7 +126,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `createNewUser should fail when user already exists`()  {
+    fun `createNewUser should fail when user already exists`() {
         // given
         val username = "test-user"
 

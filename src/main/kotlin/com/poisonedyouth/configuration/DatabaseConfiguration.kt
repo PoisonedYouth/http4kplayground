@@ -2,6 +2,7 @@ package com.poisonedyouth.configuration
 
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 import java.util.Properties
 
 data object DatabaseConfiguration {
@@ -22,6 +23,7 @@ data object DatabaseConfiguration {
                 user = user,
                 password = password,
             )
+        TransactionManager.defaultDatabase = instance
 
         Flyway.configure()
             .dataSource(url, user, password)
