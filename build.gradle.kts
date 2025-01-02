@@ -59,11 +59,12 @@ dependencies {
     implementation("org.http4k:http4k-server-ktorcio")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2")
     implementation("ch.qos.logback:logback-classic:1.5.15")
-    implementation("com.h2database:h2:2.3.232")
+    implementation("org.postgresql:postgresql:42.7.4")
     implementation("org.jetbrains.exposed:exposed-core:0.57.0")
     runtimeOnly("org.jetbrains.exposed:exposed-jdbc:0.57.0")
     implementation("org.jetbrains.exposed:exposed-java-time:0.57.0")
     implementation("org.flywaydb:flyway-core:11.1.0")
+    implementation("org.flywaydb:flyway-database-postgresql:11.1.0")
     implementation("io.insert-koin:koin-core-jvm:4.0.1")
     implementation("io.arrow-kt:arrow-core:2.0.0")
 
@@ -74,4 +75,7 @@ dependencies {
     testImplementation("com.lemonappdev:konsist:0.17.3")
     testImplementation("io.kotest.extensions:kotest-assertions-arrow-jvm:2.0.0")
     testImplementation("org.http4k:http4k-client-apache")
+    testImplementation("org.testcontainers:testcontainers:1.20.4")
+    testImplementation("org.testcontainers:junit-jupiter:1.20.4")
+    testImplementation("org.testcontainers:postgresql:1.20.4")
 }

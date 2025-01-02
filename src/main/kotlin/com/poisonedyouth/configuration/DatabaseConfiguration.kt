@@ -2,31 +2,47 @@ package com.poisonedyouth.configuration
 
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.transactions.TransactionManager
+import org.slf4j.LoggerFactory
 import java.util.Properties
+import kotlin.math.log
 
-data object DatabaseConfiguration {
-    private lateinit var instance: Database
+interface DatabaseProperties {
+    val driver: String
+    val url: String
+    val username: String
+    val password: String
+}
+
+class ApplicationPropertiesDatabaseProperties : DatabaseProperties {
+    private val properties =
+        Properties().apply {
+            this.load(
+                DatabaseConfiguration::class.java.classLoader.getResourceAsStream("application.properties"),
+            )
+        }
+    override val driver: String = properties.getProperty("database.driver")
+    override val username: String = properties.getProperty("database.username")
+    override val url: String = properties.getProperty("database.url")
+    override val password: String = properties.getProperty("database.password")
+}
+
+class DatabaseConfiguration(
+    private val databaseProperties: DatabaseProperties,
+) {
+    private val logger = LoggerFactory.getLogger(DatabaseConfiguration::class.java)
 
     fun initialize() {
-        val properties = Properties()
-        properties.load(DatabaseConfiguration::class.java.classLoader.getResourceAsStream("application.properties"))
+        logger.info("Connect to database '{}'", databaseProperties.url)
+        Database.connect(
+            url = databaseProperties.url,
+            driver = databaseProperties.driver,
+            user = databaseProperties.username,
+            password = databaseProperties.password,
+        )
 
-        val driver = properties.getProperty("database.driver")
-        val user = properties.getProperty("database.username")
-        val url = properties.getProperty("database.url")
-        val password = properties.getProperty("database.password")
-        instance =
-            Database.connect(
-                url = url,
-                driver = driver,
-                user = user,
-                password = password,
-            )
-        TransactionManager.defaultDatabase = instance
-
+        logger.info("Check for database migrations.")
         Flyway.configure()
-            .dataSource(url, user, password)
+            .dataSource(databaseProperties.url, databaseProperties.username, databaseProperties.password)
             .load().migrate()
     }
 }
