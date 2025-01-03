@@ -4,7 +4,6 @@ import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.slf4j.LoggerFactory
 import java.util.Properties
-import kotlin.math.log
 
 interface DatabaseProperties {
     val driver: String

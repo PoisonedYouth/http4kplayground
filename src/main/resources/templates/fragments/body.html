@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<body>
+<main th:fragment="main">
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/ui">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/ui/todo/new">New Todo</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <div th:replace="~{:: #body}"></div>
+</main>
+</body>
+</html>

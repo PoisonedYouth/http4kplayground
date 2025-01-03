@@ -8,6 +8,7 @@ import com.poisonedyouth.chat.infrastructure.getAllChatsHandler
 import com.poisonedyouth.chat.infrastructure.getChatHandler
 import com.poisonedyouth.user.domain.UserInputPort
 import com.poisonedyouth.user.infrastructure.addUserHandler
+import com.poisonedyouth.user.infrastructure.ui.getUiUserHandler
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
@@ -42,6 +43,10 @@ val app: HttpHandler =
             ),
         "user" bind POST to
             addUserHandler(
+                userInputPort = userInputPort,
+            ),
+        "ui/user" bind GET to
+            getUiUserHandler(
                 userInputPort = userInputPort,
             ),
     )

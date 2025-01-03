@@ -10,4 +10,6 @@ interface UserInputPort {
     fun getUserBy(userId: UUID): Either<GenericException, User?>
 
     fun createNewUser(user: User): Either<GenericException, User>
+
+    fun getAllUsers(): Either<GenericException, List<User>>
 }

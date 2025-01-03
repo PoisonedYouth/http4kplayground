@@ -32,6 +32,7 @@ val defaultModule: org.koin.core.module.Module =
 
 data object ComponentConfiguration {
     private val logger = LoggerFactory.getLogger(ComponentConfiguration::class.java)
+
     fun initKoin(module: org.koin.core.module.Module): KoinApplication {
         logger.info("Initialize Koin...")
         return startKoin {

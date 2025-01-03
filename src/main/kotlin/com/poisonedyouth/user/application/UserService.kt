@@ -48,4 +48,8 @@ class UserService(
                 )
             }
         }
+
+    override fun getAllUsers(): Either<GenericException, List<User>> {
+        return userOutputPort.findAll()
+    }
 }

@@ -67,6 +67,7 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql:11.1.0")
     implementation("io.insert-koin:koin-core-jvm:4.0.1")
     implementation("io.arrow-kt:arrow-core:2.0.0")
+    implementation("org.http4k:http4k-template-thymeleaf")
 
     testImplementation("org.http4k:http4k-testing-kotest")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.3")
